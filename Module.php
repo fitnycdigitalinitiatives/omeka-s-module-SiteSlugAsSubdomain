@@ -13,6 +13,16 @@ use SiteSlugAsSubdomain\Form\ConfigForm;
 class Module extends AbstractModule
 {
 
+    /**
+     * Get this module's configuration array.
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
     public function onBootstrap(MvcEvent $event)
     {
         parent::onBootstrap($event);
@@ -36,6 +46,7 @@ class Module extends AbstractModule
         $form->init();
         $form->setData([
             'hostname' => $settings->get('hostname'),
+            'adminname' => $settings->get('adminname'),
         ]);
         $html = <<<EOD
         <h1>SiteSlugAsSubdomain module</h1>
@@ -49,8 +60,9 @@ class Module extends AbstractModule
         <h3>{$translator->translate('Requirements')}</h3>
         <ul>
           <li>{$translator->translate('The hosts must be configured on your webserver (<strong>mysite.myapp.com</strong> must anwser the ping).')}</li>
-          <li>{$translator->translate('Your sites must be <a target="_blank" href="https://omeka.org/s/docs/user-manual/sites/#publication-settings">defined as public</a>.')}</li>
+          <li>{$translator->translate('You may need to set your php session cookie domain in .htaccess file for login sessions to carry over across admin and sites. See: <a target="_blank" href="https://stackoverflow.com/questions/644920/allow-php-sessions-to-carry-over-to-subdomains">here</a> for more details.')}</li>
           <li>{$translator->translate('Your must set your hostname below')}.</li>
+          <li>{$translator->translate('You may need to set the name of your original URL/admin dashboard below so links in site admin bar can properly link back to admin dashboard. It may or may not be identical to your hostname depending on your setup')}.</li>
         </ul>
         <h3>{$translator->translate('Hostname')}</h3>
         <p>
@@ -97,6 +109,7 @@ EOD;
          }
          $formData = $form->getData();
          $settings->set('hostname', $formData['hostname']);
+         $settings->set('adminname', $formData['adminname']);
          return true;
      }
 
@@ -152,9 +165,9 @@ EOD;
 
         $sites = $api->search('sites')->getContent();
 
-        if (!$sites) {
-            throw new NotFoundException("Page not found, are you sure your site is public ?", 2);
-        }
+        // if (!$sites) {
+        //     throw new NotFoundException("Page not found, are you sure your site is public ?", 2);
+        // }
 
         $regexp = '';
         foreach ($sites as $site) {

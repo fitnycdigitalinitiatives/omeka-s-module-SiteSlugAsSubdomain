@@ -17,6 +17,16 @@ class ConfigForm extends Form
             'attributes' => [
                 'id' => 'hostname',
             ],
+        ])
+        ->add([
+            'name' => 'adminname',
+            'type' => Element\Text::class,
+            'options' => [
+                'label' => 'Address of admin dashboard (if necessary to create canonical links back to admin from site)', // @translate
+            ],
+            'attributes' => [
+                'id' => 'adminname',
+            ],
         ]);
     }
 }
