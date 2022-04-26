@@ -11,5 +11,11 @@ return [
     'invokables' => [
         'userBar' => View\Helper\SiteSlugAsSubdomainUserBar::class,
     ],
+    'delegators' => [
+        'Laminas\View\Helper\Url' => [
+            Service\Delegator\SiteSlugAsSubdomainUrlDelegatorFactory::class,
+        ],
+    ],
   ],
+
 ];
