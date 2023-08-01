@@ -35,12 +35,11 @@ class SiteSlugAsSubdomainUrl extends LaminasUrl
 
         if ($forceCanonical) {
             // All api url's need to reference back to the main admin domain not the site domain
-            if ((strpos($name, 'api') === 0) && ($adminHost = $this->getView()->setting('adminname'))) {
-              $url = $this->getView()->serverUrl($url);
-              $oldHost = parse_url($url, PHP_URL_HOST);
-              return str_replace($oldHost, $adminHost, $url);
-            }
-            else {
+            if (((strpos($name, 'api') === 0) || (strpos($name, 'iiif') === 0)) && ($adminHost = $this->getView()->setting('adminname'))) {
+                $url = $this->getView()->serverUrl($url);
+                $oldHost = parse_url($url, PHP_URL_HOST);
+                return str_replace($oldHost, $adminHost, $url);
+            } else {
                 return $this->getView()->serverUrl($url);
             }
         }
