@@ -1,4 +1,5 @@
 <?php
+
 namespace SiteSlugAsSubdomain\View\Helper;
 
 use Laminas\View\Helper\Url as LaminasUrl;
@@ -34,13 +35,19 @@ class SiteSlugAsSubdomainUrl extends LaminasUrl
         $url = parent::__invoke($name, $params, $options, $reuseMatchedParams);
 
         if ($forceCanonical) {
-            // All api url's need to reference back to the main admin domain not the site domain
-            if ((strpos($name, 'api') === 0) && ($adminHost = $this->getView()->setting('adminname'))) {
-                $url = $this->getView()->serverUrl($url);
+            $url = $this->getView()->serverUrl($url);
+            // All api and sso url's need to reference back to the main admin domain not the site domain
+            if (((strpos($name, 'api') === 0) || (strpos($name, 'sso') === 0)) && ($adminHost = $this->getView()->setting('adminname'))) {
                 $oldHost = parse_url($url, PHP_URL_HOST);
+                $pos = strpos($url, $oldHost);
+                if ($pos !== false) {
+                    return substr_replace($url, $adminHost, $pos, strlen($oldHost));
+                } else {
+                    return $url;
+                }
                 return str_replace($oldHost, $adminHost, $url);
             } else {
-                return $this->getView()->serverUrl($url);
+                return $url;
             }
         }
         return $url;
