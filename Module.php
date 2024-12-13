@@ -27,6 +27,14 @@ class Module extends AbstractModule
     {
         parent::onBootstrap($event);
 
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        $acl->allow(
+            null,
+            [
+                'SiteSlugAsSubdomain\Controller\SiteLogout',
+            ]
+        );
+
         // Create the route only if the hostname is filled in the module configuration
         if ($this->getHostnameFromSettings()) {
             $this->addSubdomainRoute($this->getHostnameFromSettings());
@@ -86,32 +94,32 @@ EOD;
      *
      * @return String The hostname
      */
-     public function getHostnameFromSettings()
-     {
-         $settings = $this->getServiceLocator()->get('Omeka\Settings');
-         return $settings->get('hostname');
-     }
+    public function getHostnameFromSettings()
+    {
+        $settings = $this->getServiceLocator()->get('Omeka\Settings');
+        return $settings->get('hostname');
+    }
 
     /**
      * Store the hostname in the Omeka settings
      *
      * @return String The hostname
      */
-     public function handleConfigForm(AbstractController $controller)
-     {
-         $settings = $this->getServiceLocator()->get('Omeka\Settings');
-         $form = new ConfigForm;
-         $form->init();
-         $form->setData($controller->params()->fromPost());
-         if (!$form->isValid()) {
-             $controller->messenger()->addErrors($form->getMessages());
-             return false;
-         }
-         $formData = $form->getData();
-         $settings->set('hostname', $formData['hostname']);
-         $settings->set('adminname', $formData['adminname']);
-         return true;
-     }
+    public function handleConfigForm(AbstractController $controller)
+    {
+        $settings = $this->getServiceLocator()->get('Omeka\Settings');
+        $form = new ConfigForm;
+        $form->init();
+        $form->setData($controller->params()->fromPost());
+        if (!$form->isValid()) {
+            $controller->messenger()->addErrors($form->getMessages());
+            return false;
+        }
+        $formData = $form->getData();
+        $settings->set('hostname', $formData['hostname']);
+        $settings->set('adminname', $formData['adminname']);
+        return true;
+    }
 
     /**
      * Handle the subdomains routing by updating the original Omeka's route
@@ -140,14 +148,14 @@ EOD;
 
         // Handle the "/" route
         $route['child_routes']['home'] = [
-                                            'type' => \Laminas\Router\Http\Segment::class,
-                                            'options' => [
-                                                'route' => '/',
-                                                'defaults' => [
-                                                    'action' => 'index',
-                                                ],
-                                            ],
-                                        ];
+            'type' => \Laminas\Router\Http\Segment::class,
+            'options' => [
+                'route' => '/',
+                'defaults' => [
+                    'action' => 'index',
+                ],
+            ],
+        ];
 
         // Update the route
         $router->addRoute('site', $route);
@@ -171,7 +179,7 @@ EOD;
 
         $regexp = '';
         foreach ($sites as $site) {
-            $regexp .= '(^'.$site->slug().')|';
+            $regexp .= '(^' . $site->slug() . ')|';
         }
 
         return rtrim($regexp, '|');

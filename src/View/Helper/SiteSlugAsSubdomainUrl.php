@@ -11,6 +11,9 @@ use Laminas\View\Helper\Url as LaminasUrl;
  */
 class SiteSlugAsSubdomainUrl extends LaminasUrl
 {
+    protected $router;
+    protected $routeMatch;
+
     public function __construct(LaminasUrl $baseUrlHelper)
     {
         $this->router = $baseUrlHelper->router;
