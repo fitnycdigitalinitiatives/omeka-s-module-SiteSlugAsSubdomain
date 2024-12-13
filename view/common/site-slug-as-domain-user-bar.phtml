@@ -17,10 +17,14 @@ $this->headLink()->prependStylesheet('//fonts.googleapis.com/css?family=Source+C
 
 		<div class="user-links">
 			<span class="user-id">
-				<?php
-				$url = $adminname . $urlHelper('admin/id', ['controller' => 'user', 'id' => $user->getId()]);
-				echo sprintf($translate('Signed in as %s'), $hyperlink($user->getName(), $url));
-				?>
+				<?php if ($this->userIsAllowed('Omeka\Controller\Admin\User', 'show')): ?>
+					<?php
+					$url = $adminname . $urlHelper('admin/id', ['controller' => 'user', 'id' => $user->getId()]);
+					echo sprintf($translate('Signed in as %s'), $hyperlink($user->getName(), $url));
+					?>
+				<?php else: ?>
+					<?php echo sprintf($translate('Signed in as %s'), $user->getName()); ?>
+				<?php endif; ?>
 			</span>
 			<?php echo $hyperlink($translate('Logout'), $urlHelper('logout'), ['class' => 'logout']); ?>
 		</div>
