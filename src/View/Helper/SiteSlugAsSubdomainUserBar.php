@@ -1,4 +1,5 @@
 <?php
+
 namespace SiteSlugAsSubdomain\View\Helper;
 
 use Omeka\Api\Exception as ApiException;
@@ -44,7 +45,7 @@ class SiteSlugAsSubdomainUserBar extends AbstractHelper
 
         $adminname = '';
         if ($view->setting('adminname')) {
-          $adminname = '//' . $view->setting('adminname');
+            $adminname = '//' . $view->setting('adminname');
         }
 
 
@@ -53,7 +54,7 @@ class SiteSlugAsSubdomainUserBar extends AbstractHelper
         $partialName = $partialName ?: self::PARTIAL_NAME;
 
         return $view->partial(
-            'common/site-slug-as-domain-user-bar',
+            $partialName,
             [
                 'site' => $site,
                 'user' => $user,
