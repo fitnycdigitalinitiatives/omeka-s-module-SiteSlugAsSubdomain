@@ -27,14 +27,6 @@ class Module extends AbstractModule
     {
         parent::onBootstrap($event);
 
-        $acl = $this->getServiceLocator()->get('Omeka\Acl');
-        $acl->allow(
-            null,
-            [
-                'SiteSlugAsSubdomain\Controller\SiteLogout',
-            ]
-        );
-
         // Create the route only if the hostname is filled in the module configuration
         if ($this->getHostnameFromSettings()) {
             $this->addSubdomainRoute($this->getHostnameFromSettings());
